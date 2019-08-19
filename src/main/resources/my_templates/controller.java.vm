@@ -1,0 +1,135 @@
+package ${package.Controller}import com.dcy.constant.Constant;
+import com.dcy.model.BootStrapTable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+${package.Service}
+        .${table.serviceName}; ${package.Entity}.${entity};
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ * @author ${author}
+ * @since ${date}
+ */
+@RestController
+@RequestMapping("/a#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@Slf4j
+public class ${table.controllerName} {
+
+    @Autowired
+    public ${table.serviceName} ${table.serviceName};
+
+
+    /**
+     * 分页查询数据
+     *
+     * @param bootStrapTable  分页信息
+     * @param ${table.entityPath} 查询条件
+     * @return
+     */
+    @PostMapping("/page")
+    public ResultObj page(BootStrapTable<${entity}> bootStrapTable,${entity} ${table.entityPath}){
+        try{
+            List result = bootStrapTable.setRows(${table.serviceName}.selectPage(bootStrapTable,${table.entityPath}));
+            // result.put(Constant.BOOTSTAP_TABLE_ROWS,new ArrayList<>());
+            // result.put(Constant.BOOTSTRAP_TABLE_TOTAL,0);
+            return new ResultObj<>(result);
+        }catch(Exception e){
+            log.error("get${entity}List -=- {}",e.toString());
+            throw new ServiceException();
+        }
+    }
+
+    /**
+     * 添加
+     *
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     */
+    @PostMapping("/add")
+    public ResultObj add(@RequestBody Model model){
+        try{
+            ${entity} ${table.entityPath} =  ${table.serviceName}.save(model);
+            return new ResultObj<>();
+        }catch(Exception ex){
+            log.error("${table.entityPath}Add -=- {}",ex.toString());
+            throw new ServiceException();
+        }
+    }
+
+    /**
+     * 修改
+     * @param request
+     * @param id  实体ID
+     * @return
+     */
+    @PutMapping("/update")
+    public ResultObj update(@RequestBody Long id){
+        try{
+            ${entity} ${table.entityPath} = ${table.serviceName}.selectById(id);
+            return new ResultObj<>();
+        }catch(Exception ex){
+            log.error("${table.entityPath}Update -=- {}",ex.toString());
+            throw new ServiceException();
+        }
+    }
+
+    /**
+     * 保存和修改公用的
+     * @param ${table.entityPath} 传递的实体
+     * @return 0 失败  1 成功
+     */
+    @PostMapping("/save")
+    public ResultObj save(@RequestBody ${entity} ${table.entityPath}){
+        int count=0;
+        try{
+            count = ${table.serviceName}.insertOrUpdate(${table.entityPath}) ? 1 : 0;
+            return new ResultObj<>();
+        }catch(Exception e){
+            log.error("${table.entityPath}Save -=- {}",e.toString());
+            throw new ServiceException();
+        }
+     }
+
+    /**
+     * 根据id删除对象
+     * @param id  实体ID
+     * @return 0 失败  1 成功
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResultObj delete(@PathVariable("id") Long id){
+        int count=0;
+        try{
+            count = ${table.serviceName}.deleteById(id)?1:0;
+            return new ResultObj<>();
+        }catch(Exception e){
+            log.error("${table.entityPath}Delete -=- {}",e.toString());
+            throw new ServiceException();
+        }
+     }
+
+    /**
+     * 批量删除对象
+     * @param item 实体集合ID
+     * @return  0 失败  1 成功
+     */
+    @GetMapping"/batchDelete/{ids}")
+    public ResultObj deleteBatchIds(@PathVariable("ids") String item){
+        int count=0;
+        try{
+            List<Long> ids=(List<Long>)JSON.parse(item);
+            count = ${table.serviceName}.deleteBatchIds(ids)?1:0;
+            return new ResultObj<>();
+        }catch(Exception e){
+            log.error("${table.entityPath}BatchDelete -=- {}",e.toString());
+            throw new ServiceException();
+        }
+    }
+
+
+}
