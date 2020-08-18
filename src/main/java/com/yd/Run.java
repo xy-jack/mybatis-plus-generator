@@ -17,9 +17,9 @@ public class Run {
         // 设置包名
         String packageName = "com.yd";
         // user -> UserService, 设置成true: user -> IUserService
-        boolean serviceNameStartWithI = false;
+        boolean serviceNameStartWithI = true;
         // 生成你需要的表名，多个表名传数组
-        String tableNames = "base_user";
+        String tableNames = "sys_menu";
         generateByTables(serviceNameStartWithI, packageName, tableNames);
     }
 
@@ -27,7 +27,7 @@ public class Run {
         // 数据源配置
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
         dataSourceConfig.setDbType(DbType.MYSQL)
-                .setUrl("jdbc:mysql://119.23.71.201:3306/my_db?characterEncoding=utf8")
+                .setUrl("jdbc:mysql://119.23.71.201:3306/faster?characterEncoding=utf8")
                 .setUsername("root")
                 .setPassword("kDfh9GZ?Q(BE")
                 .setDriverName("com.mysql.jdbc.Driver");
@@ -35,22 +35,25 @@ public class Run {
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig();
         strategyConfig.setCapitalMode(true)
-                .setEntityLombokModel(true) // 使用lombok注解
-                .setNaming(NamingStrategy.underline_to_camel)
-                .setSuperEntityClass("com.yd.BaseEntity")  // 设置公共实体类
+                .setEntityTableFieldAnnotationEnable(true)   // 是否生成实体时，生成字段注解
+                .setEntityLombokModel(true)     // 使用lombok注解
+                .setNaming(NamingStrategy.underline_to_camel)     // 下划线转驼峰命名
+                .setSuperEntityClass("com.yd.entity.BaseEntity")   // 设置公共实体类
                 .setInclude(tableNames); // 需要生成的表
         // .setExclude(new String[]{"test"}); // 排除生成的表
 
+        // 全局配置
         GlobalConfig config = new GlobalConfig();
         config.setActiveRecord(false)
                 .setAuthor("YD")
-                .setOutputDir("G:\\codeGen")  // 输出路径
+                .setOutputDir("F:\\codeGen")  // 输出路径
                 .setFileOverride(true)
                 .setBaseResultMap(true)  // 生成 BaseResultMap
                 .setBaseColumnList(true); // 生成通用查询结果列
 
+        // service前缀加 I
         if (!serviceNameStartWithI) {
-            config.setServiceName("%sService");
+            config.setServiceName("I%sService");
         }
         //config.setDateType(DateType.ONLY_DATE);  // 设置时间类使用哪个包
         /* 自定义文件命名，注意 %s 会自动填充表实体属性！ */
