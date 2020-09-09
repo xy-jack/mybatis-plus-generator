@@ -1,13 +1,13 @@
-package ${package.Controller}
+package ${package.Controller};
 
-import com.dcy.constant.Constant;
-import com.dcy.model.BootStrapTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.yd.common.ResultObj;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-${package.Service}.${table.serviceName}; ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import ${package.Entity}.${entity};
 
 /**
  * <p>
@@ -36,8 +36,7 @@ public class ${table.controllerName} {
     @PostMapping("/page")
     public ResultObj page(@RequestBody Page<${entity}> ${table.entityPath}){
         try{
-            List result = ${table.serviceName}.page(${table.entityPath}));
-            return new ResultObj(result);
+            return new ResultObj(${table.serviceName}.page(${table.entityPath}));
         }catch(Exception e){
             log.error("get${entity}Page -=- {}",e.toString());
             throw e;
@@ -79,7 +78,7 @@ public class ${table.controllerName} {
      *
      * @param item 实体集合ID
      */
-    @GetMapping"/batchDelete/{ids}")
+    @GetMapping("/batchDelete/{ids}")
     public ResultObj deleteBatchIds(@PathVariable("ids") String item){
         try{
             return new ResultObj(${table.serviceName}.removeByIds(ids));

@@ -1,6 +1,7 @@
 package com.yd;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
@@ -19,7 +20,7 @@ public class Run {
         // user -> UserService, 设置成true: user -> IUserService
         boolean serviceNameStartWithI = true;
         // 生成你需要的表名，多个表名传数组
-        String tableNames = "sys_menu";
+        String tableNames = "sys_role";
         generateByTables(serviceNameStartWithI, packageName, tableNames);
     }
 
@@ -35,21 +36,24 @@ public class Run {
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig();
         strategyConfig.setCapitalMode(true)
-                .setEntityTableFieldAnnotationEnable(true)   // 是否生成实体时，生成字段注解
-                .setEntityLombokModel(true)     // 使用lombok注解
-                .setNaming(NamingStrategy.underline_to_camel)     // 下划线转驼峰命名
-                .setSuperEntityClass("com.yd.entity.BaseEntity")   // 设置公共实体类
-                .setInclude(tableNames); // 需要生成的表
-        // .setExclude(new String[]{"test"}); // 排除生成的表
+                .setEntityTableFieldAnnotationEnable(true)                  // 是否生成实体时，生成字段注解
+                .setEntityColumnConstant(true)                              // 将实体类字段生成常量
+                .setEntityLombokModel(true)                                 // 使用lombok注解
+                .setNaming(NamingStrategy.underline_to_camel)               // 下划线转驼峰命名
+                .setSuperEntityClass("com.yd.entity.BaseEntity")            // 设置公共实体类
+                // .setExclude(new String[]{"test"}); // 排除生成的表
+                .setInclude(tableNames);                                    // 需要生成的表
 
         // 全局配置
         GlobalConfig config = new GlobalConfig();
         config.setActiveRecord(false)
                 .setAuthor("YD")
-                .setOutputDir("F:\\codeGen")  // 输出路径
-                .setFileOverride(true)
-                .setBaseResultMap(true)  // 生成 BaseResultMap
-                .setBaseColumnList(true); // 生成通用查询结果列
+                .setOutputDir("F:\\codeGen")        // 输出路径
+                .setFileOverride(true)              // 是否覆盖已有文件
+                .setBaseResultMap(true)             // 生成 BaseResultMap
+                //.setIdType(IdType.AUTO)             // 指定生成的主键的ID类型
+                //.setSwagger2(true)                  // 开启 swagger2 模式
+                .setBaseColumnList(true);           // 生成通用查询结果列
 
         // service前缀加 I
         if (!serviceNameStartWithI) {
@@ -85,6 +89,7 @@ public class Run {
         tc.setXml("/templatesMybatis/mapper.xml.vm");*/
         // 如上任何一个模块如果设置 空 OR Null 将不生成该模块。
 
+        // 开始执行
         new AutoGenerator().setGlobalConfig(config)
                 .setDataSource(dataSourceConfig)
                 .setStrategy(strategyConfig)
